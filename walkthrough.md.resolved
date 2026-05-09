@@ -1,0 +1,35 @@
+# FarmTwin .NET 8 Backend
+I have successfully setup the .NET 8 ASP.NET Core Clean Architecture backend for your FarmTwin project.
+
+## Architecture Structure
+The application has been separated into four main layers as required:
+- **FarmTwin.Domain**: Contains core Entities ([Farm](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Domain/Entities/Farm.cs#6-18), [Field](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Domain/Entities/Field.cs#6-23), [Crop](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Domain/Entities/Crop.cs#5-13), `SoilType`, [Scenario](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Domain/Entities/Scenario.cs#6-26), [SimulationResult](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Domain/Entities/SimulationResult.cs#5-19), [WeatherRecord](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Domain/Entities/WeatherRecord.cs#5-17)).
+- **FarmTwin.Application**: Contains application logic, specifically the `IRepository<T>` and [IFarmRepository](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Application/Interfaces/Repositories/IFarmRepository.cs#8-12) interfaces.
+- **FarmTwin.Infrastructure**: Contains the Entity Framework Core implementation, the [ApplicationDbContext](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Infrastructure/Data/ApplicationDbContext.cs#7-60) tailored for PostgreSQL, and the implementation of repositories ([FarmRepository](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Infrastructure/Repositories/FarmRepository.cs#15-19)).
+- **FarmTwin.API**: Contains the Web API endpoints ([FarmsController](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.API/Controllers/FarmsController.cs#15-19) & [AuthController](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.API/Controllers/AuthController.cs#15-19)), dependency injection wiring in [Program.cs](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.API/Program.cs), and configurations for JWT authentication and PostgreSQL connection strings.
+
+## Key Features Configured
+> [!IMPORTANT]
+> The database migrations are not yet created. Before running this app locally, you will need to open a terminal in the API folder and run the migration commands.
+
+### 1. Database Configuration
+PostgreSQL is fully mapped in [ApplicationDbContext](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Infrastructure/Data/ApplicationDbContext.cs#7-60) with foreign key relationships and delete cascades.
+To run migrations, go to `FarmTwin.API` and run:
+```bash
+dotnet ef migrations add InitialCreate --project ../FarmTwin.Infrastructure
+dotnet ef database update
+```
+
+### 2. Dependency Injection
+The standard Clean Architecture DI pattern is used. [Program.cs](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.API/Program.cs) registers two extension methods:
+- [AddApplicationServices()](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Application/DependencyInjection.cs#7-14)
+- [AddInfrastructureServices(builder.Configuration)](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Infrastructure/DependencyInjection.cs#12-26)
+
+### 3. JWT Authentication Setup
+The [Program.cs](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.API/Program.cs) file is setup to use ASP.NET Core `JwtBearer`. A sample [AuthController](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.API/Controllers/AuthController.cs#15-19) is also configured to generate standard JWT tokens for users mimicking login actions. The [FarmsController](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.API/Controllers/FarmsController.cs#15-19) has the `[Authorize]` attribute meaning it requires a valid token to perform CRUD operations on [Farm](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Domain/Entities/Farm.cs#6-18) entities.
+
+## Next Steps
+Now that the core Domain entities and backend structure are configured, you can:
+1. Initialize the PostgreSQL Database
+2. Formally implement the [SimulationResult](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Domain/Entities/SimulationResult.cs#5-19) logic or business use cases inside the [Application](file:///c:/Users/Karim/Desktop/farmproject/FarmTwin.Infrastructure/Data/ApplicationDbContext.cs#7-60) layer.
+3. Hook up MediatR queries/commands if CQRS is desired.
