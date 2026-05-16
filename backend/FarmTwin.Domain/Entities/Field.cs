@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using FarmTwin.Domain.Common;
 
 namespace FarmTwin.Domain.Entities;
 
-public class Field
+public class Field : BaseEntity
 {
-    public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public double AreaHectares { get; set; }
     public SoilType SoilType { get; set; }

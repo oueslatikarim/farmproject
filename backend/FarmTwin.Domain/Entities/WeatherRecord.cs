@@ -1,10 +1,11 @@
 using System;
 
+using FarmTwin.Domain.Common;
+
 namespace FarmTwin.Domain.Entities;
 
-public class WeatherRecord
+public class WeatherRecord : BaseEntity
 {
-    public Guid Id { get; set; }
     public DateTime Date { get; set; }
     public double TemperatureCelsius { get; set; }
     public double RainfallMm { get; set; }

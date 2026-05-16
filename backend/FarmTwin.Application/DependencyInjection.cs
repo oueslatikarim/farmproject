@@ -1,4 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
+using FarmTwin.Application.Interfaces.Auth;
+using FarmTwin.Application.Services;
 
 namespace FarmTwin.Application;
 
@@ -10,6 +13,9 @@ public static class DependencyInjection
         // For now, we only register the Simulation Engine
         services.AddScoped<FarmTwin.Application.Interfaces.Services.ISimulationEngine, FarmTwin.Application.Services.RuleBasedSimulationEngine>();
         
+        services.AddValidatorsFromAssemblyContaining<Validators.LoginRequestValidator>();
+        services.AddScoped<IAuthService, AuthService>();
+
         return services;
     }
 }

@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 
+using FarmTwin.Domain.Common;
+
 namespace FarmTwin.Domain.Entities;
 
-public class Scenario
+public class Scenario : BaseEntity
 {
-    public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     // Parameters for simulation
     public double PlannedIrrigationMm { get; set; }

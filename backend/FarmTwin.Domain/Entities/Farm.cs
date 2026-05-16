@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using FarmTwin.Domain.Common;
 
 namespace FarmTwin.Domain.Entities;
 
-public class Farm
+public class Farm : BaseEntity
 {
-    public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string OwnerId { get; set; } = string.Empty; // From JWT
     public string Location { get; set; } = string.Empty;

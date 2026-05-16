@@ -1,11 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Options;
-using FarmTwin.API.Models.Auth;
-using FarmTwin.API.Options;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using FarmTwin.Application.Models.Auth;
+using FarmTwin.Application.Interfaces.Auth;
 
 namespace FarmTwin.API.Controllers;
 
@@ -13,41 +8,31 @@ namespace FarmTwin.API.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly JwtOptions _jwt;
+    private readonly IAuthService _authService;
 
-    public AuthController(IOptions<JwtOptions> jwt)
+    public AuthController(IAuthService authService)
     {
-        _jwt = jwt.Value;
+        _authService = authService;
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        // NOTE: This is still demo-only auth. Replace with Identity/IdP before production.
-        if (request.Username == "admin" && request.Password == "password")
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        var response = await _authService.LoginAsync(request);
+        return Ok(response);
+    }
 
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, request.Username),
-                new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
-            };
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    {
+        var response = await _authService.RegisterAsync(request);
+        return Ok(response);
+    }
 
-            var token = new JwtSecurityToken(
-              issuer: _jwt.Issuer,
-              audience: _jwt.Audience,
-              claims: claims,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token)
-            });
-        }
-
-        return Unauthorized();
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
+    {
+        var response = await _authService.RefreshTokenAsync(request);
+        return Ok(response);
     }
 }

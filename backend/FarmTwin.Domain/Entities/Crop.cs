@@ -1,10 +1,11 @@
 using System;
 
+using FarmTwin.Domain.Common;
+
 namespace FarmTwin.Domain.Entities;
 
-public class Crop
+public class Crop : BaseEntity
 {
-    public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Variety { get; set; } = string.Empty;
     public int ExpectedGrowingDays { get; set; }

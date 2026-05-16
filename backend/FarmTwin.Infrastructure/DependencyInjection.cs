@@ -1,6 +1,10 @@
 using FarmTwin.Application.Interfaces.Repositories;
 using FarmTwin.Infrastructure.Data;
 using FarmTwin.Infrastructure.Repositories;
+using FarmTwin.Application.Interfaces;
+using FarmTwin.Application.Interfaces.Auth;
+using FarmTwin.Infrastructure.Auth;
+using FarmTwin.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +24,12 @@ public static class DependencyInjection
         services.AddScoped<IFarmRepository, FarmRepository>();
         services.AddScoped<IFieldRepository, FieldRepository>();
         services.AddScoped<IScenarioRepository, ScenarioRepository>();
+
+        // Auth
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IJwtProvider, JwtProvider>();
 
         return services;
     }

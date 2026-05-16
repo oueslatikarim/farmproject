@@ -18,3 +18,10 @@ pnpm-debug.log*
 .env
 .env.*
 
+## .NET
+**/bin/
+**/obj/
+*.user
+*.userosscache
+*.sln.docstates
+
